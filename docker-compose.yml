@@ -1,7 +1,7 @@
 version: '2'
 services:
   zookeeper:
-    image: debezium/zookeeper:1.4
+    image: debezium/zookeeper:${DEBEZIUM_VERSION}
     ports:
       - 2181:2181
       - 2888:2888
@@ -9,27 +9,28 @@ services:
     container_name: zookeeper
 
   kafka:
-    image: debezium/kafka:1.4
+    image: debezium/kafka:${DEBEZIUM_VERSION}
     ports:
       - 9092:9092
     container_name: kafka
-    depends_on:
+    links:
       - zookeeper
+#    depends_on:
+#      - zookeeper
     environment:
       - ZOOKEEPER_CONNECT=zookeeper:2181
 
   mysql:
-    image: debezium/example-mysql:1.5
+    image: debezium/example-mysql:${DEBEZIUM_VERSION}
     ports:
       - 3306:3306
     container_name: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=debezium
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=mysqlpw
   debezium-connect:
-    image: debezium/connect:1.4
+    image: debezium/connect:${DEBEZIUM_VERSION}
     ports:
       - 8083:8083
     container_name: connect
@@ -42,16 +43,6 @@ services:
       - CONNECT_REST_ADVERTISED_HOST_NAME=localhost
       - CONNECT_PRODUCER_REQUEST_TIMEOUT_MS=3000
       - CONNECT_PRODUCER_RETRY_BACKOFF_MS=500
-    depends_on:
+    links:
       - kafka
-      - zookeeper
       - mysql
-
-#  debezium-setup:
-#    build: .
-#    env_file:
-#      - .env
-#    depends_on:
-#      - debezium-connect
-#      - mysql
-#    container_name: debezium-setup

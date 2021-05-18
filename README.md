@@ -13,7 +13,7 @@ $ KAFKA_CONNECT_HOST=http://localhost:8083/connectors/
 $ curl -XGET $KAFKA_CONNECT_HOST
 
 # Add MySQL Connector
-$ curl --fail -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" $KAFKA_CONNECT_HOST -d @register-connect-mysql.json
+$ curl --fail -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" $KAFKA_CONNECT_HOST -d @source-connect-mysql.json
 ```
 Reference: https://debezium.io/documentation/reference/tutorial.html
 
@@ -32,7 +32,7 @@ CREATE TABLE student (name varchar(100), roll_no integer);
 
 INSERT INTO student VALUES ("Josh Doe", 10);
 UPDATE student SET name="John Doe" WHERE roll_no=10;
-DELETE student WHERE roll_no=10;
+DELETE from student WHERE roll_no=10;
 ```
 - Checking Kafka
 ```bash
@@ -41,5 +41,5 @@ $ docker exec -it kafka sh -c 'exec ./bin/kafka-topics.sh --bootstrap-server kaf
 
 # Consume messages from Kafka
 $ TOPIC=local.inventory.student
-$ docker exec -it kafka sh -c "exec ./bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 print.key=true --from-beginning --topic $TOPIC"
+$ docker exec -it kafka sh -c "exec ./bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --property print.key=true --from-beginning --topic $TOPIC"
 ```
