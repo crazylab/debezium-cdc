@@ -19,7 +19,7 @@ services:
       - ZOOKEEPER_CONNECT=zookeeper:2181
 
   mysql:
-    image: debezium/example-mysql:1.4
+    image: debezium/example-mysql:1.5
     ports:
       - 3306:3306
     container_name: mysql
@@ -42,10 +42,6 @@ services:
       - CONNECT_REST_ADVERTISED_HOST_NAME=localhost
       - CONNECT_PRODUCER_REQUEST_TIMEOUT_MS=3000
       - CONNECT_PRODUCER_RETRY_BACKOFF_MS=500
-    links:
-      - zookeeper:zookeeper
-      - kafka:kafka
-      - mysql:mysql
     depends_on:
       - kafka
       - zookeeper
